@@ -1,0 +1,70 @@
+<?php
+
+namespace Caresome\FilamentPoll\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+/**
+ * @property int $id
+ * @property int $poll_id
+ * @property string $text
+ * @property int $votes_count
+ * @property int $order
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read float $percentage
+ * @property-read Poll $poll
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, PollVote> $votes
+ */
+class PollOption extends Model
+{
+    public function getTable()
+    {
+        return config('poll.table_names.poll_options', 'poll_options');
+    }
+
+    protected $fillable = [
+        'poll_id',
+        'text',
+        'votes_count',
+        'order',
+    ];
+
+    protected $casts = [
+        'votes_count' => 'integer',
+        'order' => 'integer',
+    ];
+
+    public function poll(): BelongsTo
+    {
+        return $this->belongsTo(Poll::class);
+    }
+
+    public function votes(): HasMany
+    {
+        return $this->hasMany(PollVote::class);
+    }
+
+    public function getPercentageAttribute(): float
+    {
+        $totalVotes = $this->poll->total_votes;
+
+        if ($totalVotes === 0) {
+            return 0;
+        }
+
+        return round(($this->votes_count / $totalVotes) * 100, 2);
+    }
+
+    public function incrementVotes(): void
+    {
+        $this->increment('votes_count');
+    }
+
+    public function decrementVotes(): void
+    {
+        $this->decrement('votes_count');
+    }
+}

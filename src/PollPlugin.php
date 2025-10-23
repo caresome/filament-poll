@@ -2,6 +2,7 @@
 
 namespace Caresome\FilamentPoll;
 
+use Caresome\FilamentPoll\Resources\PollResource;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
@@ -9,15 +10,14 @@ class PollPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'poll';
+        return 'filament-poll';
     }
 
     public function register(Panel $panel): void
     {
-        $panel
-            ->resources([])
-            ->pages([])
-            ->widgets([]);
+        $panel->resources([
+            PollResource::class,
+        ]);
     }
 
     public function boot(Panel $panel): void {}

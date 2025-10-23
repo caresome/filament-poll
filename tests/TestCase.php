@@ -3,7 +3,10 @@
 namespace Caresome\FilamentPoll\Tests;
 
 use Caresome\FilamentPoll\PollServiceProvider;
+use Filament\FilamentServiceProvider;
+use Filament\Support\SupportServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
@@ -20,6 +23,9 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
+            LivewireServiceProvider::class,
+            SupportServiceProvider::class,
+            FilamentServiceProvider::class,
             PollServiceProvider::class,
         ];
     }
