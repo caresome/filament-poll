@@ -15,9 +15,7 @@ return [
     ],
 
     'navigation' => [
-        'group' => 'Content',
         'icon' => 'heroicon-o-chart-bar',
         'sort' => null,
-        'label' => 'Polls',
     ],
 ];

@@ -36,30 +36,32 @@ class PollTable
     {
         return [
             TextColumn::make('title')
+                ->label(__('filament-poll::filament-poll.tables.columns.title'))
                 ->searchable()
                 ->sortable()
                 ->weight(FontWeight::Bold),
 
             TextColumn::make('total_votes')
-                ->label('Total Votes')
+                ->label(__('filament-poll::filament-poll.tables.columns.total_votes'))
                 ->sortable(),
 
             IconColumn::make('is_active')
-                ->label('Active')
+                ->label(__('filament-poll::filament-poll.tables.columns.active'))
                 ->boolean()
                 ->sortable(),
 
             IconColumn::make('multiple_choice')
-                ->label('Multiple')
+                ->label(__('filament-poll::filament-poll.tables.columns.multiple'))
                 ->boolean(),
 
             TextColumn::make('closes_at')
                 ->placeholder('-')
-                ->label('Closes')
+                ->label(__('filament-poll::filament-poll.tables.columns.closes'))
                 ->dateTime('M d, Y h:i A')
                 ->sortable(),
 
             TextColumn::make('created_at')
+                ->label(__('filament-poll::filament-poll.tables.columns.created_at'))
                 ->dateTime('M d, Y h:i A')
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
@@ -72,14 +74,14 @@ class PollTable
             TrashedFilter::make(),
 
             TernaryFilter::make('is_active')
-                ->label('Active'),
+                ->label(__('filament-poll::filament-poll.tables.filters.active')),
 
             Filter::make('closes_at')
                 ->schema([
                     DatePicker::make('closes_from')
-                        ->label('Closes From'),
+                        ->label(__('filament-poll::filament-poll.tables.filters.closes_from')),
                     DatePicker::make('closes_until')
-                        ->label('Closes Until'),
+                        ->label(__('filament-poll::filament-poll.tables.filters.closes_until')),
                 ])
                 ->query(function ($query, array $data) {
                     return $query

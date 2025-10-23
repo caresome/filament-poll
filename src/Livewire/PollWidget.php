@@ -41,19 +41,19 @@ class PollWidget extends Component
     public function vote(): void
     {
         if (! $this->canVote()) {
-            $this->addError('poll', 'You must be logged in to vote on this poll.');
+            $this->addError('poll', __('filament-poll::filament-poll.messages.errors.login_required'));
 
             return;
         }
 
         if ($this->poll->isClosed()) {
-            $this->addError('poll', 'This poll is closed.');
+            $this->addError('poll', __('filament-poll::filament-poll.messages.errors.poll_closed'));
 
             return;
         }
 
         if ($this->hasVoted) {
-            $this->addError('poll', 'You have already voted in this poll.');
+            $this->addError('poll', __('filament-poll::filament-poll.messages.errors.already_voted'));
 
             return;
         }
@@ -62,13 +62,13 @@ class PollWidget extends Component
         $options = array_filter($options);
 
         if (empty($options)) {
-            $this->addError('poll', 'Please select at least one option.');
+            $this->addError('poll', __('filament-poll::filament-poll.messages.errors.select_at_least_one'));
 
             return;
         }
 
         if (! $this->poll->multiple_choice && count($options) > 1) {
-            $this->addError('poll', 'You can only select one option.');
+            $this->addError('poll', __('filament-poll::filament-poll.messages.errors.select_only_one'));
 
             return;
         }

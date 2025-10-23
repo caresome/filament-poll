@@ -20,6 +20,7 @@ class PollServiceProvider extends PackageServiceProvider
             ->name(static::$name)
             ->hasConfigFile()
             ->hasViews('filament-poll')
+            ->hasTranslations()
             ->hasMigrations([
                 'create_polls_table',
                 'create_poll_options_table',

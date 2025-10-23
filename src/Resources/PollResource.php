@@ -47,12 +47,12 @@ class PollResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return config('filament-poll.navigation.label', 'Polls');
+        return __('filament-poll::filament-poll.navigation.label');
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return config('filament-poll.navigation.group', 'Content');
+        return __('filament-poll::filament-poll.navigation.group');
     }
 
     public static function getNavigationIcon(): ?string

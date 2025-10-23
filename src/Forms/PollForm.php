@@ -17,47 +17,49 @@ class PollForm
         return [
             Grid::make()
                 ->schema([
-                    Section::make('Details')
+                    Section::make(__('filament-poll::filament-poll.forms.sections.details'))
                         ->compact()
                         ->columnSpanFull()
                         ->schema([
                             TextInput::make('title')
+                                ->label(__('filament-poll::filament-poll.forms.fields.title'))
                                 ->required()
                                 ->maxLength(255)
                                 ->columnSpanFull(),
 
                             Textarea::make('description')
+                                ->label(__('filament-poll::filament-poll.forms.fields.description'))
                                 ->rows(3)
                                 ->columnSpanFull(),
 
                             DateTimePicker::make('closes_at')
-                                ->label('Closing Date'),
+                                ->label(__('filament-poll::filament-poll.forms.fields.closes_at')),
                         ]),
-                    Section::make('Settings')
+                    Section::make(__('filament-poll::filament-poll.forms.sections.settings'))
                         ->compact()
                         ->columnSpanFull()
                         ->collapsible()
                         ->schema([
                             Toggle::make('is_active')
-                                ->label('Active')
+                                ->label(__('filament-poll::filament-poll.forms.fields.active'))
                                 ->default(config('filament-poll.defaults.is_active', true)),
 
                             Toggle::make('multiple_choice')
-                                ->label('Allow Multiple Choices')
+                                ->label(__('filament-poll::filament-poll.forms.fields.allow_multiple_choices'))
                                 ->default(config('filament-poll.defaults.multiple_choice', false)),
 
                             Toggle::make('allow_guest_voting')
-                                ->label('Allow Guest Voting')
+                                ->label(__('filament-poll::filament-poll.forms.fields.allow_guest_voting'))
                                 ->default(config('filament-poll.defaults.allow_guest_voting', false)),
 
                             Toggle::make('show_results_before_voting')
-                                ->label('Show Results Before Voting')
+                                ->label(__('filament-poll::filament-poll.forms.fields.show_results_before_voting'))
                                 ->default(config('filament-poll.defaults.show_results_before_voting', false)),
                         ])
                         ->columns(2),
                 ]),
 
-            Section::make('Options')
+            Section::make(__('filament-poll::filament-poll.forms.sections.options'))
                 ->compact()
                 ->schema([
                     Repeater::make('options')
@@ -65,6 +67,7 @@ class PollForm
                         ->relationship()
                         ->simple(
                             TextInput::make('text')
+                                ->label(__('filament-poll::filament-poll.forms.fields.text'))
                                 ->required()
                                 ->maxLength(255)
                                 ->columnSpanFull()
@@ -75,7 +78,7 @@ class PollForm
                         ->minItems(2)
                         ->defaultItems(2)
                         ->itemLabel(fn (array $state): ?string => $state['text'] ?? null)
-                        ->addActionLabel('Add Option')
+                        ->addActionLabel(__('filament-poll::filament-poll.forms.actions.add_option'))
                         ->columnSpanFull(),
                 ]),
         ];

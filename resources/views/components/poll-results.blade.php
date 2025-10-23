@@ -44,7 +44,8 @@
     <div class="fi-poll-footer">
         <div class="fi-poll-total-votes">
             <x-filament::icon icon="heroicon-o-users" class="fi-poll-total-votes-icon" />
-            <span>{{ number_format($poll->total_votes) }} total {{ Str::plural('vote', $poll->total_votes) }}</span>
+            <span>{{ number_format($poll->total_votes) }} {{ __('filament-poll::filament-poll.total_text') }}
+                {{ trans_choice('filament-poll::filament-poll.vote_count', $poll->total_votes, ['count' => '']) }}</span>
         </div>
     </div>
 </div>

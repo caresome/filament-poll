@@ -13,11 +13,11 @@
         <x-slot name="headerEnd">
             @if ($poll->isClosed())
                 <x-filament::badge color="danger">
-                    Closed
+                    {{ __('filament-poll::filament-poll.badges.closed') }}
                 </x-filament::badge>
             @elseif($poll->closes_at && $poll->closes_at->isFuture())
                 <x-filament::badge color="warning">
-                    Closes {{ $poll->closes_at->diffForHumans() }}
+                    {{ __('filament-poll::filament-poll.badges.closes') }} {{ $poll->closes_at->diffForHumans() }}
                 </x-filament::badge>
             @endif
         </x-slot>
@@ -78,7 +78,7 @@
 
                                         @if ($userVotedThis)
                                             <x-filament::badge color="success" size="xs">
-                                                Your vote
+                                                {{ __('filament-poll::filament-poll.badges.your_vote') }}
                                             </x-filament::badge>
                                         @endif
                                     </div>
@@ -100,14 +100,14 @@
                 <div class="fi-poll-footer">
                     <div class="fi-poll-total-votes">
                         <x-filament::icon icon="heroicon-o-users" class="fi-poll-total-votes-icon" />
-                        <span>{{ number_format($poll->total_votes) }} total
-                            {{ Str::plural('vote', $poll->total_votes) }}</span>
+                        <span>{{ number_format($poll->total_votes) }} {{ __('filament-poll::filament-poll.total_text') }}
+                            {{ trans_choice('filament-poll::filament-poll.vote_count', $poll->total_votes, ['count' => '']) }}</span>
                     </div>
 
                     @if (!$hasVoted && !$poll->isClosed())
                         <x-filament::button wire:click="$set('showResults', false)" color="gray" size="sm"
                             outlined>
-                            Back to voting
+                            {{ __('filament-poll::filament-poll.actions.back_to_voting') }}
                         </x-filament::button>
                     @endif
                 </div>
@@ -116,7 +116,7 @@
                     <div class="fi-poll-login-required">
                         <x-filament::badge icon="heroicon-o-lock-closed" color="warning" size="lg"
                             class="w-full justify-center p-3">
-                            Login required to vote
+                            {{ __('filament-poll::filament-poll.badges.login_required') }}
                         </x-filament::badge>
 
                         <div class="fi-poll-options-disabled">
@@ -138,7 +138,7 @@
                         @if ($poll->show_results_before_voting)
                             <x-filament::button type="button" wire:click="showResultsOnly" color="gray" outlined>
                                 <x-filament::icon icon="heroicon-o-chart-bar" class="h-4 w-4 mr-1" />
-                                View Results
+                                {{ __('filament-poll::filament-poll.actions.view_results') }}
                             </x-filament::button>
                         @endif
                     </div>
@@ -170,7 +170,7 @@
                         @if ($poll->multiple_choice)
                             <div class="fi-poll-info">
                                 <x-filament::icon icon="heroicon-o-information-circle" class="fi-poll-info-icon" />
-                                <span>You can select multiple options</span>
+                                <span>{{ __('filament-poll::filament-poll.messages.info.multiple_selection') }}</span>
                             </div>
                         @endif
 
@@ -179,14 +179,14 @@
                                 <x-filament::button type="submit" :disabled="empty($selectedOptions) ||
                                     (is_array($selectedOptions) && count($selectedOptions) == 0)">
                                     <x-filament::icon icon="heroicon-o-check" class="h-4 w-4 mr-1" />
-                                    Submit Vote
+                                    {{ __('filament-poll::filament-poll.actions.submit_vote') }}
                                 </x-filament::button>
                             @endif
 
                             @if ($poll->show_results_before_voting)
                                 <x-filament::button type="button" wire:click="showResultsOnly" color="gray" outlined>
                                     <x-filament::icon icon="heroicon-o-chart-bar" class="h-4 w-4 mr-1" />
-                                    View Results
+                                    {{ __('filament-poll::filament-poll.actions.view_results') }}
                                 </x-filament::button>
                             @endif
                         </div>
@@ -200,19 +200,19 @@
                 <div class="flex flex-wrap items-center gap-2">
                     @if ($poll->allow_guest_voting)
                         <x-filament::badge color="info" icon="heroicon-o-users">
-                            Guest Voting
+                            {{ __('filament-poll::filament-poll.badges.guest_voting') }}
                         </x-filament::badge>
                     @endif
 
                     @if ($poll->multiple_choice)
                         <x-filament::badge color="warning" icon="heroicon-o-list-bullet">
-                            Multiple Choice
+                            {{ __('filament-poll::filament-poll.badges.multiple_choice') }}
                         </x-filament::badge>
                     @endif
 
                     @if ($poll->show_results_before_voting)
                         <x-filament::badge color="gray" icon="heroicon-o-eye">
-                            Results Visible
+                            {{ __('filament-poll::filament-poll.badges.results_visible') }}
                         </x-filament::badge>
                     @endif
 
@@ -221,9 +221,9 @@
                             <x-filament::icon icon="heroicon-o-clock" class="h-3 w-3" />
                             <span>
                                 @if ($poll->closes_at->isPast())
-                                    Ended {{ $poll->closes_at->diffForHumans() }}
+                                    {{ __('filament-poll::filament-poll.badges.ended') }} {{ $poll->closes_at->diffForHumans() }}
                                 @else
-                                    Ends {{ $poll->closes_at->diffForHumans() }}
+                                    {{ __('filament-poll::filament-poll.badges.ends') }} {{ $poll->closes_at->diffForHumans() }}
                                 @endif
                             </span>
                         </div>
