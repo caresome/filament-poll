@@ -2,6 +2,7 @@
 
 namespace Caresome\FilamentPoll\Tables;
 
+use Caresome\FilamentPoll\Models\Poll;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -36,10 +37,11 @@ class PollTable
     {
         return [
             TextColumn::make('title')
+                ->description(fn (Poll $record) => str()->limit($record->description, 50))
                 ->label(__('filament-poll::filament-poll.tables.columns.title'))
                 ->searchable()
                 ->sortable()
-                ->weight(FontWeight::Bold),
+                ->weight(FontWeight::Medium),
 
             TextColumn::make('total_votes')
                 ->label(__('filament-poll::filament-poll.tables.columns.total_votes'))
@@ -52,13 +54,15 @@ class PollTable
 
             IconColumn::make('multiple_choice')
                 ->label(__('filament-poll::filament-poll.tables.columns.multiple'))
-                ->boolean(),
+                ->boolean()
+                ->toggleable(isToggledHiddenByDefault: true),
 
             TextColumn::make('closes_at')
                 ->placeholder('-')
                 ->label(__('filament-poll::filament-poll.tables.columns.closes'))
                 ->dateTime('M d, Y h:i A')
-                ->sortable(),
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
 
             TextColumn::make('created_at')
                 ->label(__('filament-poll::filament-poll.tables.columns.created_at'))

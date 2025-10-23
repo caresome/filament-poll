@@ -4,6 +4,7 @@ namespace Caresome\FilamentPoll\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -12,11 +13,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $user_id
  * @property string|null $ip_address
  * @property string|null $session_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read Poll $poll
  * @property-read PollOption $option
- * @property-read \Illuminate\Database\Eloquent\Model|null $user
+ * @property-read Model|null $user
  */
 class PollVote extends Model
 {

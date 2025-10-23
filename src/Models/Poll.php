@@ -2,9 +2,11 @@
 
 namespace Caresome\FilamentPoll\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -14,13 +16,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool $is_active
  * @property bool $show_results_before_voting
  * @property bool $allow_guest_voting
- * @property \Illuminate\Support\Carbon|null $closes_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property Carbon|null $closes_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property-read int $total_votes
- * @property-read \Illuminate\Database\Eloquent\Collection<int, PollOption> $options
- * @property-read \Illuminate\Database\Eloquent\Collection<int, PollVote> $votes
+ * @property-read Collection<int, PollOption> $options
+ * @property-read Collection<int, PollVote> $votes
  */
 class Poll extends Model
 {

@@ -2,9 +2,11 @@
 
 namespace Caresome\FilamentPoll\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -12,11 +14,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $text
  * @property int $votes_count
  * @property int $order
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read float $percentage
  * @property-read Poll $poll
- * @property-read \Illuminate\Database\Eloquent\Collection<int, PollVote> $votes
+ * @property-read Collection<int, PollVote> $votes
  */
 class PollOption extends Model
 {
