@@ -40,19 +40,19 @@ class PollForm
                         ->schema([
                             Toggle::make('is_active')
                                 ->label('Active')
-                                ->default(config('poll.defaults.is_active', true)),
+                                ->default(config('filament-poll.defaults.is_active', true)),
 
                             Toggle::make('multiple_choice')
                                 ->label('Allow Multiple Choices')
-                                ->default(config('poll.defaults.multiple_choice', false)),
+                                ->default(config('filament-poll.defaults.multiple_choice', false)),
 
                             Toggle::make('allow_guest_voting')
                                 ->label('Allow Guest Voting')
-                                ->default(config('poll.defaults.allow_guest_voting', false)),
+                                ->default(config('filament-poll.defaults.allow_guest_voting', false)),
 
                             Toggle::make('show_results_before_voting')
                                 ->label('Show Results Before Voting')
-                                ->default(config('poll.defaults.show_results_before_voting', false)),
+                                ->default(config('filament-poll.defaults.show_results_before_voting', false)),
                         ])
                         ->columns(2),
                 ]),

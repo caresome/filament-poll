@@ -47,21 +47,21 @@ class PollResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return config('poll.navigation.label', 'Polls');
+        return config('filament-poll.navigation.label', 'Polls');
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return config('poll.navigation.group', 'Content');
+        return config('filament-poll.navigation.group', 'Content');
     }
 
     public static function getNavigationIcon(): ?string
     {
-        return config('poll.navigation.icon', 'heroicon-o-chart-bar');
+        return config('filament-poll.navigation.icon', 'heroicon-o-chart-bar');
     }
 
     public static function getNavigationSort(): ?int
     {
-        return config('poll.navigation.sort');
+        return config('filament-poll.navigation.sort');
     }
 }

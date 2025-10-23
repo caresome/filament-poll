@@ -30,7 +30,7 @@ class PollServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         FilamentAsset::register([
-            Css::make('poll', __DIR__.'/../resources/css/poll.css'),
+            Css::make('filament-poll', __DIR__.'/../resources/css/filament-poll.css'),
         ], package: 'caresome/filament-poll');
 
         Livewire::component('caresome::filament-poll', PollWidget::class);

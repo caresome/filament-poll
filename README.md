@@ -24,20 +24,20 @@ composer require caresome/filament-poll
 Publish and run migrations:
 
 ```bash
-php artisan vendor:publish --tag="poll-migrations"
+php artisan vendor:publish --tag="filament-poll-migrations"
 php artisan migrate
 ```
 
 Optionally publish the config file:
 
 ```bash
-php artisan vendor:publish --tag="poll-config"
+php artisan vendor:publish --tag="filament-poll-config"
 ```
 
 Optionally publish the views:
 
 ```bash
-php artisan vendor:publish --tag="poll-views"
+php artisan vendor:publish --tag="filament-poll-views"
 ```
 
 ## Usage

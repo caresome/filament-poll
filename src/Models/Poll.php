@@ -28,7 +28,7 @@ class Poll extends Model
 
     public function getTable()
     {
-        return config('poll.table_names.polls', 'polls');
+        return config('filament-poll.table_names.polls', 'polls');
     }
 
     protected $fillable = [

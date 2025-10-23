@@ -22,7 +22,7 @@ class PollOption extends Model
 {
     public function getTable()
     {
-        return config('poll.table_names.poll_options', 'poll_options');
+        return config('filament-poll.table_names.poll_options', 'poll_options');
     }
 
     protected $fillable = [
