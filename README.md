@@ -2,6 +2,9 @@
 
 A FilamentPHP plugin for creating and managing polls with Livewire-powered blade components.
 
+![filament-poll-thumbnail](https://github.com/user-attachments/assets/3818c52f-97ca-45ca-a438-2b787df41e3c)
+
+
 ## Features
 
 - Create and manage polls through Filament admin panel
