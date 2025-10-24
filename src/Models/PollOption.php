@@ -17,7 +17,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read float $percentage
- * @property-read Poll $poll
+ * @property-read Poll|null $poll
  * @property-read Collection<int, PollVote> $votes
  */
 class PollOption extends Model
@@ -51,6 +51,10 @@ class PollOption extends Model
 
     public function getPercentageAttribute(): float
     {
+        if (! $this->poll) {
+            return 0;
+        }
+
         $totalVotes = $this->poll->total_votes;
 
         if ($totalVotes === 0) {

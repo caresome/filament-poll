@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
  * @property bool $is_active
  * @property bool $show_results_before_voting
  * @property bool $allow_guest_voting
+ * @property bool $show_vote_count
  * @property Carbon|null $closes_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -40,6 +41,7 @@ class Poll extends Model
         'is_active',
         'show_results_before_voting',
         'allow_guest_voting',
+        'show_vote_count',
         'closes_at',
     ];
 
@@ -48,6 +50,7 @@ class Poll extends Model
         'is_active' => 'boolean',
         'show_results_before_voting' => 'boolean',
         'allow_guest_voting' => 'boolean',
+        'show_vote_count' => 'boolean',
         'closes_at' => 'datetime',
     ];
 
@@ -76,30 +79,16 @@ class Poll extends Model
 
     public function getTotalVotesAttribute(): int
     {
+        if (isset($this->attributes['votes_count'])) {
+            return (int) $this->attributes['votes_count'];
+        }
+
         return $this->votes()->count();
     }
 
     public function hasUserVoted($userId = null, $ipAddress = null, $sessionId = null): bool
     {
-        $query = $this->votes();
-
-        if ($userId) {
-            $query->where('user_id', $userId);
-        } elseif ($ipAddress) {
-            $query->where('ip_address', $ipAddress);
-        } elseif ($sessionId) {
-            $query->where('session_id', $sessionId);
-        }
-
-        return $query->exists();
-    }
-
-    public function updateTotalVotes(): void
-    {
-        foreach ($this->options as $option) {
-            $option->update([
-                'votes_count' => $option->votes()->count(),
-            ]);
-        }
+        return app(\Caresome\FilamentPoll\Services\VotingService::class)
+            ->hasUserVoted($this, $userId, $ipAddress, $sessionId);
     }
 }

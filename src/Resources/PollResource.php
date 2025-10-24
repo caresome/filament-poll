@@ -47,21 +47,21 @@ class PollResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('filament-poll::filament-poll.navigation.label');
+        return __('filament-poll::navigation.label');
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return __('filament-poll::filament-poll.navigation.group');
+        return __('filament-poll::navigation.group');
     }
 
     public static function getNavigationIcon(): ?string
     {
-        return config('filament-poll.navigation.icon', 'heroicon-o-chart-bar');
+        return \Caresome\FilamentPoll\PollPlugin::get()->getNavigationIcon();
     }
 
     public static function getNavigationSort(): ?int
     {
-        return config('filament-poll.navigation.sort');
+        return \Caresome\FilamentPoll\PollPlugin::get()->getNavigationSort();
     }
 }

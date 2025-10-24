@@ -8,7 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('polls', function (Blueprint $table) {
+        $tableName = config('filament-poll.table_names.polls', 'polls');
+
+        Schema::create($tableName, function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
@@ -16,6 +18,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->boolean('show_results_before_voting')->default(false);
             $table->boolean('allow_guest_voting')->default(false);
+            $table->boolean('show_vote_count')->default(true);
             $table->timestamp('closes_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
@@ -27,6 +30,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('polls');
+        $tableName = config('filament-poll.table_names.polls', 'polls');
+
+        Schema::dropIfExists($tableName);
     }
 };

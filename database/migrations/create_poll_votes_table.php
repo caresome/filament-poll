@@ -8,11 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('poll_votes', function (Blueprint $table) {
+        $tableName = config('filament-poll.table_names.poll_votes', 'poll_votes');
+        $pollsTable = config('filament-poll.table_names.polls', 'polls');
+        $pollOptionsTable = config('filament-poll.table_names.poll_options', 'poll_options');
+
+        Schema::create($tableName, function (Blueprint $table) use ($pollsTable, $pollOptionsTable) {
             $table->id();
-            $table->foreignId('poll_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('poll_option_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('poll_id')->constrained($pollsTable)->cascadeOnDelete();
+            $table->foreignId('poll_option_id')->constrained($pollOptionsTable)->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->string('ip_address')->nullable();
             $table->string('session_id')->nullable();
             $table->timestamps();
@@ -20,11 +24,16 @@ return new class extends Migration
             $table->index(['poll_id', 'user_id']);
             $table->index(['poll_id', 'ip_address']);
             $table->index(['poll_id', 'session_id']);
+
+            $table->unique(['poll_id', 'user_id'], 'unique_user_vote');
+            $table->unique(['poll_id', 'session_id', 'ip_address'], 'unique_guest_vote');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('poll_votes');
+        $tableName = config('filament-poll.table_names.poll_votes', 'poll_votes');
+
+        Schema::dropIfExists($tableName);
     }
 };

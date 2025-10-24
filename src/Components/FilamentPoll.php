@@ -4,6 +4,7 @@ namespace Caresome\FilamentPoll\Components;
 
 use Caresome\FilamentPoll\Models\Poll as PollModel;
 use Illuminate\View\Component;
+use InvalidArgumentException;
 
 class FilamentPoll extends Component
 {
@@ -15,6 +16,8 @@ class FilamentPoll extends Component
             $this->poll = $poll;
         } elseif ($pollId) {
             $this->poll = PollModel::findOrFail($pollId);
+        } else {
+            throw new InvalidArgumentException('Either poll or pollId must be provided.');
         }
     }
 

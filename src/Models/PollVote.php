@@ -46,7 +46,9 @@ class PollVote extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(config('auth.providers.users.model'));
+        $model = \Caresome\FilamentPoll\PollPlugin::get()->getUserModelClass();
+
+        return $this->belongsTo($model);
     }
 
     protected static function booted(): void

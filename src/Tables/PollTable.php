@@ -30,7 +30,7 @@ class PollTable
             ->filters(static::filters())
             ->recordActions(static::recordActions())
             ->toolbarActions(static::toolbarActions())
-            ->modifyQueryUsing(fn ($query) => $query->withTrashed());
+            ->modifyQueryUsing(fn ($query) => $query->withTrashed()->withCount('votes'));
     }
 
     public static function columns(): array
@@ -38,34 +38,34 @@ class PollTable
         return [
             TextColumn::make('title')
                 ->description(fn (Poll $record) => str()->limit($record->description, 50))
-                ->label(__('filament-poll::filament-poll.tables.columns.title'))
+                ->label(__('filament-poll::tables.columns.title'))
                 ->searchable()
                 ->sortable()
                 ->weight(FontWeight::Medium),
 
             TextColumn::make('total_votes')
-                ->label(__('filament-poll::filament-poll.tables.columns.total_votes'))
+                ->label(__('filament-poll::tables.columns.total_votes'))
                 ->sortable(),
 
             IconColumn::make('is_active')
-                ->label(__('filament-poll::filament-poll.tables.columns.active'))
+                ->label(__('filament-poll::tables.columns.active'))
                 ->boolean()
                 ->sortable(),
 
             IconColumn::make('multiple_choice')
-                ->label(__('filament-poll::filament-poll.tables.columns.multiple'))
+                ->label(__('filament-poll::tables.columns.multiple'))
                 ->boolean()
                 ->toggleable(isToggledHiddenByDefault: true),
 
             TextColumn::make('closes_at')
                 ->placeholder('-')
-                ->label(__('filament-poll::filament-poll.tables.columns.closes'))
+                ->label(__('filament-poll::tables.columns.closes'))
                 ->dateTime('M d, Y h:i A')
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
 
             TextColumn::make('created_at')
-                ->label(__('filament-poll::filament-poll.tables.columns.created_at'))
+                ->label(__('filament-poll::tables.columns.created_at'))
                 ->dateTime('M d, Y h:i A')
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
@@ -78,14 +78,14 @@ class PollTable
             TrashedFilter::make(),
 
             TernaryFilter::make('is_active')
-                ->label(__('filament-poll::filament-poll.tables.filters.active')),
+                ->label(__('filament-poll::tables.filters.active')),
 
             Filter::make('closes_at')
                 ->schema([
                     DatePicker::make('closes_from')
-                        ->label(__('filament-poll::filament-poll.tables.filters.closes_from')),
+                        ->label(__('filament-poll::tables.filters.closes_from')),
                     DatePicker::make('closes_until')
-                        ->label(__('filament-poll::filament-poll.tables.filters.closes_until')),
+                        ->label(__('filament-poll::tables.filters.closes_until')),
                 ])
                 ->query(function ($query, array $data) {
                     return $query

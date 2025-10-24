@@ -4,7 +4,10 @@ namespace Caresome\FilamentPoll\Livewire;
 
 use Caresome\FilamentPoll\Models\Poll;
 use Caresome\FilamentPoll\Models\PollVote;
-use Illuminate\Support\Facades\Auth;
+use Caresome\FilamentPoll\PollPlugin;
+use Caresome\FilamentPoll\Services\VotingService;
+use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class PollWidget extends Component
@@ -17,6 +20,21 @@ class PollWidget extends Component
 
     public bool $showResults = false;
 
+    protected function getAuthGuard(): ?string
+    {
+        return PollPlugin::get()->resolveAuthGuard();
+    }
+
+    protected function isAuthenticated(): bool
+    {
+        return auth($this->getAuthGuard())->check();
+    }
+
+    protected function getAuthUserId(): ?int
+    {
+        return auth($this->getAuthGuard())->id();
+    }
+
     public function mount(Poll $poll): void
     {
         $this->poll = $poll->load(['options', 'votes']);
@@ -26,34 +44,34 @@ class PollWidget extends Component
 
     public function canVote(): bool
     {
-        if (Auth::check()) {
-            return true;
-        }
-
-        return $this->poll->allow_guest_voting;
+        return app(VotingService::class)->canUserVote(
+            $this->poll,
+            $this->isAuthenticated(),
+            $this->poll->allow_guest_voting
+        );
     }
 
     public function requiresLogin(): bool
     {
-        return ! Auth::check() && ! $this->poll->allow_guest_voting;
+        return ! $this->isAuthenticated() && ! $this->poll->allow_guest_voting;
     }
 
     public function vote(): void
     {
         if (! $this->canVote()) {
-            $this->addError('poll', __('filament-poll::filament-poll.messages.errors.login_required'));
+            $this->addError('poll', __('filament-poll::messages.errors.login_required'));
 
             return;
         }
 
         if ($this->poll->isClosed()) {
-            $this->addError('poll', __('filament-poll::filament-poll.messages.errors.poll_closed'));
+            $this->addError('poll', __('filament-poll::messages.errors.poll_closed'));
 
             return;
         }
 
         if ($this->hasVoted) {
-            $this->addError('poll', __('filament-poll::filament-poll.messages.errors.already_voted'));
+            $this->addError('poll', __('filament-poll::messages.errors.already_voted'));
 
             return;
         }
@@ -62,32 +80,40 @@ class PollWidget extends Component
         $options = array_filter($options);
 
         if (empty($options)) {
-            $this->addError('poll', __('filament-poll::filament-poll.messages.errors.select_at_least_one'));
+            $this->addError('poll', __('filament-poll::messages.errors.select_at_least_one'));
 
             return;
         }
 
         if (! $this->poll->multiple_choice && count($options) > 1) {
-            $this->addError('poll', __('filament-poll::filament-poll.messages.errors.select_only_one'));
+            $this->addError('poll', __('filament-poll::messages.errors.select_only_one'));
 
             return;
         }
 
-        foreach ($options as $optionId) {
-            PollVote::create([
-                'poll_id' => $this->poll->id,
-                'poll_option_id' => $optionId,
-                'user_id' => Auth::id(),
-                'ip_address' => request()->ip(),
-                'session_id' => session()->getId(),
-            ]);
+        try {
+            DB::transaction(function () use ($options) {
+                foreach ($options as $optionId) {
+                    PollVote::create([
+                        'poll_id' => $this->poll->id,
+                        'poll_option_id' => $optionId,
+                        'user_id' => $this->getAuthUserId(),
+                        'ip_address' => request()->ip(),
+                        'session_id' => session()->getId(),
+                    ]);
+                }
+            });
+
+            $this->hasVoted = true;
+            $this->showResults = true;
+            $this->poll->refresh();
+
+            $this->dispatch('poll-voted', pollId: $this->poll->id);
+        } catch (UniqueConstraintViolationException $e) {
+            $this->addError('poll', __('filament-poll::messages.errors.already_voted'));
+
+            return;
         }
-
-        $this->hasVoted = true;
-        $this->showResults = true;
-        $this->poll->refresh();
-
-        $this->dispatch('poll-voted', pollId: $this->poll->id);
     }
 
     public function showResultsOnly(): void
@@ -98,7 +124,7 @@ class PollWidget extends Component
     protected function checkIfUserHasVoted(): void
     {
         $this->hasVoted = $this->poll->hasUserVoted(
-            Auth::id(),
+            $this->getAuthUserId(),
             request()->ip(),
             session()->getId()
         );

@@ -8,9 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('poll_options', function (Blueprint $table) {
+        $tableName = config('filament-poll.table_names.poll_options', 'poll_options');
+        $pollsTable = config('filament-poll.table_names.polls', 'polls');
+
+        Schema::create($tableName, function (Blueprint $table) use ($pollsTable) {
             $table->id();
-            $table->foreignId('poll_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('poll_id')->constrained($pollsTable)->cascadeOnDelete();
             $table->string('text');
             $table->integer('votes_count')->default(0);
             $table->integer('order')->default(0);
@@ -22,6 +25,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('poll_options');
+        $tableName = config('filament-poll.table_names.poll_options', 'poll_options');
+
+        Schema::dropIfExists($tableName);
     }
 };

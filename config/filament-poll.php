@@ -6,16 +6,4 @@ return [
         'poll_options' => 'poll_options',
         'poll_votes' => 'poll_votes',
     ],
-
-    'defaults' => [
-        'is_active' => true,
-        'allow_guest_voting' => false,
-        'multiple_choice' => false,
-        'show_results_before_voting' => false,
-    ],
-
-    'navigation' => [
-        'icon' => 'heroicon-o-chart-bar',
-        'sort' => null,
-    ],
 ];
