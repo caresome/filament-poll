@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('poll_id')->constrained($pollsTable)->cascadeOnDelete();
             $table->foreignId('poll_option_id')->constrained($pollOptionsTable)->cascadeOnDelete();
-            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable();
             $table->string('ip_address')->nullable();
             $table->string('session_id')->nullable();
             $table->timestamps();
@@ -25,8 +25,8 @@ return new class extends Migration
             $table->index(['poll_id', 'ip_address']);
             $table->index(['poll_id', 'session_id']);
 
-            $table->unique(['poll_id', 'user_id'], 'unique_user_vote');
-            $table->unique(['poll_id', 'session_id', 'ip_address'], 'unique_guest_vote');
+            $table->unique(['poll_id', 'poll_option_id', 'user_id'], 'unique_user_vote');
+            $table->unique(['poll_id', 'poll_option_id', 'session_id', 'ip_address'], 'unique_guest_vote');
         });
     }
 

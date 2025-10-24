@@ -4,6 +4,7 @@ namespace Caresome\FilamentPoll;
 
 use Caresome\FilamentPoll\Resources\PollResource;
 use Filament\Contracts\Plugin;
+use Filament\Facades\Filament;
 use Filament\Panel;
 
 class PollPlugin implements Plugin
@@ -207,9 +208,9 @@ class PollPlugin implements Plugin
             return $this->authGuard;
         }
 
-        if ($this->autoDetectFilamentAuth && class_exists(\Filament\Facades\Filament::class)) {
+        if ($this->autoDetectFilamentAuth && class_exists(Filament::class)) {
             try {
-                $panel = \Filament\Facades\Filament::getCurrentPanel();
+                $panel = Filament::getCurrentPanel();
                 if ($panel) {
                     return $panel->getAuthGuard();
                 }

@@ -2,6 +2,9 @@
 
 namespace Caresome\FilamentPoll\Models;
 
+use Caresome\FilamentPoll\Database\Factories\PollVoteFactory;
+use Caresome\FilamentPoll\Events\PollVoted;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -21,6 +24,8 @@ use Illuminate\Support\Carbon;
  */
 class PollVote extends Model
 {
+    use HasFactory;
+
     public function getTable()
     {
         return config('filament-poll.table_names.poll_votes', 'poll_votes');
@@ -55,10 +60,16 @@ class PollVote extends Model
     {
         static::created(function (PollVote $vote) {
             $vote->option->incrementVotes();
+            PollVoted::dispatch($vote, $vote->poll);
         });
 
         static::deleted(function (PollVote $vote) {
             $vote->option->decrementVotes();
         });
+    }
+
+    protected static function newFactory()
+    {
+        return PollVoteFactory::new();
     }
 }

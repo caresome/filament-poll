@@ -21,4 +21,5 @@ return [
     'actions' => [
         'add_option' => 'Add Option',
     ],
+    'select_option' => 'Select an option',
 ];

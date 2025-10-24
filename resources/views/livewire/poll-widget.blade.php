@@ -4,10 +4,11 @@
     $authGuard = PollPlugin::get()->resolveAuthGuard();
 @endphp
 
-<div class="fi-poll-widget" @if ($pollingInterval = PollPlugin::get()->getPollingInterval()) wire:poll.{{ $pollingInterval }} @endif>
+<div class="fi-poll-widget" @if ($pollingInterval = PollPlugin::get()->getPollingInterval()) wire:poll.{{ $pollingInterval }} @endif
+    role="region" aria-labelledby="poll-title-{{ $poll->id }}">
     <x-filament::section compact>
         <x-slot name="heading">
-            {{ $poll->title }}
+            <span id="poll-title-{{ $poll->id }}">{{ $poll->title }}</span>
         </x-slot>
 
         @if ($poll->description)
@@ -30,9 +31,9 @@
 
         <div class="space-y-4">
             @error('poll')
-                <div class="fi-fo-field-wrp-error-message fi-poll-error">
+                <div class="fi-fo-field-wrp-error-message fi-poll-error" role="alert" aria-live="polite" id="poll-error-{{ $poll->id }}">
                     <div class="fi-poll-error-container">
-                        <x-filament::icon icon="heroicon-o-exclamation-circle" class="fi-poll-error-icon" />
+                        <x-filament::icon icon="heroicon-o-exclamation-circle" class="fi-poll-error-icon" aria-hidden="true" />
                         <span>{{ $message }}</span>
                     </div>
                 </div>
@@ -56,19 +57,20 @@
                 @endif
             @else
                 @if ($this->requiresLogin())
-                    <div class="fi-poll-login-required">
+                    <div class="fi-poll-login-required" role="status" aria-live="polite">
                         <x-filament::badge icon="heroicon-o-lock-closed" color="warning" size="lg"
-                            class="w-full justify-center p-3">
+                            class="w-full justify-center p-3"
+                            role="alert">
                             {{ __('filament-poll::badges.login_required') }}
                         </x-filament::badge>
 
-                        <div class="fi-poll-options-disabled">
+                        <div class="fi-poll-options-disabled" aria-disabled="true">
                             @foreach ($poll->options as $option)
                                 <div class="fi-poll-option-disabled">
                                     @if ($poll->multiple_choice)
-                                        <x-filament::input.checkbox disabled :value="$option->id" />
+                                        <x-filament::input.checkbox disabled :value="$option->id" aria-label="{{ $option->text }} ({{ __('filament-poll::badges.login_required') }})" />
                                     @else
-                                        <x-filament::input.radio disabled :value="$option->id" />
+                                        <x-filament::input.radio disabled :value="$option->id" aria-label="{{ $option->text }} ({{ __('filament-poll::badges.login_required') }})" />
                                     @endif
 
                                     <span class="fi-poll-option-disabled-text">
@@ -85,8 +87,12 @@
                         @endif
                     </div>
                 @else
-                    <form wire:submit="vote" class="fi-poll-voting-form">
-                        <div class="fi-poll-options-list">
+                    <form wire:submit="vote" class="fi-poll-voting-form" role="form"
+                        aria-labelledby="poll-title-{{ $poll->id }}"
+                        @error('poll') aria-describedby="poll-error-{{ $poll->id }}" @enderror>
+                        <fieldset class="fi-poll-options-list" role="group"
+                            aria-label="{{ $poll->multiple_choice ? __('filament-poll::messages.info.multiple_selection') : __('filament-poll::forms.select_option') }}">
+                            <legend class="sr-only">{{ __('filament-poll::forms.select_option') }}</legend>
                             @foreach ($poll->options as $option)
                                 @php
                                     $isSelected =
@@ -94,12 +100,20 @@
                                         $selectedOptions == $option->id;
                                 @endphp
 
-                                <label class="fi-poll-option-choice {{ $isSelected ? 'selected' : '' }}">
+                                <label class="fi-poll-option-choice {{ $isSelected ? 'selected' : '' }}" for="poll-option-{{ $option->id }}">
                                     @if ($poll->multiple_choice)
-                                        <x-filament::input.checkbox wire:model.live="selectedOptions"
-                                            :value="$option->id" />
+                                        <x-filament::input.checkbox
+                                            wire:model.live="selectedOptions"
+                                            :value="$option->id"
+                                            id="poll-option-{{ $option->id }}"
+                                            aria-label="{{ $option->text }}" />
                                     @else
-                                        <x-filament::input.radio wire:model.live="selectedOptions" :value="$option->id" />
+                                        <x-filament::input.radio
+                                            wire:model.live="selectedOptions"
+                                            :value="$option->id"
+                                            id="poll-option-{{ $option->id }}"
+                                            name="poll-{{ $poll->id }}-option"
+                                            aria-label="{{ $option->text }}" />
                                     @endif
 
                                     <span class="fi-poll-option-choice-text">
@@ -107,25 +121,36 @@
                                     </span>
                                 </label>
                             @endforeach
-                        </div>
+                        </fieldset>
 
                         @if ($poll->multiple_choice)
-                            <div class="fi-poll-info">
-                                <x-filament::icon icon="heroicon-o-information-circle" class="fi-poll-info-icon" />
+                            <div class="fi-poll-info" role="status" aria-live="polite">
+                                <x-filament::icon icon="heroicon-o-information-circle" class="fi-poll-info-icon" aria-hidden="true" />
                                 <span>{{ __('filament-poll::messages.info.multiple_selection') }}</span>
                             </div>
                         @endif
 
                         <div class="fi-poll-actions">
                             @if (!$poll->isClosed())
-                                <x-filament::button icon="heroicon-o-check" size="sm" type="submit" :disabled="empty($selectedOptions) ||
-                                    (is_array($selectedOptions) && count($selectedOptions) == 0)">
+                                <x-filament::button
+                                    icon="heroicon-o-check"
+                                    size="sm"
+                                    type="submit"
+                                    :disabled="empty($selectedOptions) || (is_array($selectedOptions) && count($selectedOptions) == 0)"
+                                    aria-label="{{ __('filament-poll::actions.submit_vote') }}">
                                     {{ __('filament-poll::actions.submit_vote') }}
                                 </x-filament::button>
                             @endif
 
                             @if ($poll->show_results_before_voting)
-                                <x-filament::button icon="heroicon-o-chart-bar" size="sm" type="button" wire:click="showResultsOnly" color="gray" outlined>
+                                <x-filament::button
+                                    icon="heroicon-o-chart-bar"
+                                    size="sm"
+                                    type="button"
+                                    wire:click="showResultsOnly"
+                                    color="gray"
+                                    outlined
+                                    aria-label="{{ __('filament-poll::actions.view_results') }}">
                                     {{ __('filament-poll::actions.view_results') }}
                                 </x-filament::button>
                             @endif

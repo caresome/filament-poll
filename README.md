@@ -176,6 +176,107 @@ Or pass the poll model:
 @livewire('caresome::filament-poll', ['poll' => $poll])
 ```
 
+## Events
+
+The package dispatches several events that you can listen to for custom functionality:
+
+### Available Events
+
+#### PollCreated
+Dispatched when a new poll is created.
+
+```php
+use Caresome\FilamentPoll\Events\PollCreated;
+
+class SendPollCreatedNotification
+{
+    public function handle(PollCreated $event): void
+    {
+        $poll = $event->poll;
+
+        // Send notification to admins
+        // Log the creation
+        // Trigger webhooks
+    }
+}
+```
+
+#### PollVoted
+Dispatched when a vote is cast (authenticated or guest).
+
+```php
+use Caresome\FilamentPoll\Events\PollVoted;
+
+class TrackVoteAnalytics
+{
+    public function handle(PollVoted $event): void
+    {
+        $vote = $event->vote;
+        $poll = $event->poll;
+
+        // Track analytics
+        // Send real-time updates
+        // Notify poll creator
+    }
+}
+```
+
+#### PollClosed
+Dispatched when a poll transitions from open to closed (either by `is_active` becoming false or `closes_at` passing).
+
+```php
+use Caresome\FilamentPoll\Events\PollClosed;
+
+class HandlePollClosure
+{
+    public function handle(PollClosed $event): void
+    {
+        $poll = $event->poll;
+
+        // Send results summary
+        // Archive poll data
+        // Notify stakeholders
+    }
+}
+```
+
+### Registering Event Listeners
+
+In your `EventServiceProvider`:
+
+```php
+use Caresome\FilamentPoll\Events\PollCreated;
+use Caresome\FilamentPoll\Events\PollVoted;
+use Caresome\FilamentPoll\Events\PollClosed;
+
+protected $listen = [
+    PollCreated::class => [
+        SendPollCreatedNotification::class,
+    ],
+    PollVoted::class => [
+        TrackVoteAnalytics::class,
+    ],
+    PollClosed::class => [
+        HandlePollClosure::class,
+        SendResultsSummary::class,
+    ],
+];
+```
+
+Or use the `Event::listen()` method in a service provider:
+
+```php
+use Illuminate\Support\Facades\Event;
+use Caresome\FilamentPoll\Events\PollVoted;
+
+public function boot(): void
+{
+    Event::listen(PollVoted::class, function (PollVoted $event) {
+        // Handle the vote
+    });
+}
+```
+
 ## Advanced Configuration
 
 ### Plugin Configuration
@@ -225,6 +326,63 @@ The package includes several performance optimizations:
 - Database indexes on frequently queried fields
 - Unique constraints that double as query indexes
 - Cached vote counting when using `withCount()`
+
+## Testing
+
+The package includes comprehensive test coverage:
+
+### Running Tests
+
+```bash
+composer test
+```
+
+### Test Coverage
+
+```bash
+composer test-coverage
+```
+
+### Available Factories
+
+The package provides factories for easy testing:
+
+```php
+use Caresome\FilamentPoll\Models\Poll;
+use Caresome\FilamentPoll\Models\PollOption;
+use Caresome\FilamentPoll\Models\PollVote;
+
+// Create a poll with various states
+$poll = Poll::factory()->create();
+$poll = Poll::factory()->active()->multipleChoice()->allowGuestVoting()->create();
+$poll = Poll::factory()->closed()->create();
+
+// Create poll options
+$option = PollOption::factory()->forPoll($poll)->create();
+
+// Create votes
+$vote = PollVote::factory()->forOption($option)->authenticated(1)->create();
+$vote = PollVote::factory()->forOption($option)->guest()->create();
+```
+
+Available poll factory states:
+- `active()` / `inactive()`
+- `closed()` / `open()` / `neverCloses()`
+- `multipleChoice()` / `singleChoice()`
+- `allowGuestVoting()` / `requireAuth()`
+- `showResultsBeforeVoting()` / `hideResultsBeforeVoting()`
+
+## Accessibility
+
+The package follows WCAG 2.1 AA accessibility standards:
+
+- **ARIA Labels**: All interactive elements have proper ARIA labels
+- **Keyboard Navigation**: Full keyboard support for voting
+- **Screen Readers**: Comprehensive screen reader announcements
+- **Focus Management**: Visible focus indicators and logical tab order
+- **Live Regions**: Dynamic updates announced to assistive technologies
+- **Semantic HTML**: Proper use of semantic elements (fieldset, legend, etc.)
+- **Progress Bars**: Accessible progress indicators with proper ARIA attributes
 
 ## License
 

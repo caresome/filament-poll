@@ -4,12 +4,17 @@ namespace Caresome\FilamentPoll\Services;
 
 use Caresome\FilamentPoll\Models\Poll;
 use Caresome\FilamentPoll\PollPlugin;
+use Throwable;
 
 class VotingService
 {
     protected function getAuthGuard(): ?string
     {
-        return PollPlugin::get()->resolveAuthGuard();
+        try {
+            return PollPlugin::get()->resolveAuthGuard();
+        } catch (Throwable $e) {
+            return null;
+        }
     }
 
     public function getAuthUserId(): ?int

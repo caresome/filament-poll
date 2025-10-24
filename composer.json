@@ -44,6 +44,7 @@
     "autoload-dev": {
         "psr-4": {
             "Caresome\\FilamentPoll\\Tests\\": "tests/",
+            "Caresome\\FilamentPoll\\Database\\Factories\\": "database/factories/",
             "Workbench\\App\\": "workbench/app/"
         }
     },

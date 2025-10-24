@@ -2,7 +2,12 @@
 
 namespace Caresome\FilamentPoll\Models;
 
+use Caresome\FilamentPoll\Database\Factories\PollFactory;
+use Caresome\FilamentPoll\Events\PollClosed;
+use Caresome\FilamentPoll\Events\PollCreated;
+use Caresome\FilamentPoll\Services\VotingService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,7 +32,7 @@ use Illuminate\Support\Carbon;
  */
 class Poll extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     public function getTable()
     {
@@ -88,7 +93,30 @@ class Poll extends Model
 
     public function hasUserVoted($userId = null, $ipAddress = null, $sessionId = null): bool
     {
-        return app(\Caresome\FilamentPoll\Services\VotingService::class)
+        return app(VotingService::class)
             ->hasUserVoted($this, $userId, $ipAddress, $sessionId);
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (Poll $poll) {
+            PollCreated::dispatch($poll);
+        });
+
+        static::updated(function (Poll $poll) {
+            if ($poll->isClosed() && ! $poll->wasRecentlyCreated) {
+                $wasClosedBefore = $poll->getOriginal('is_active') === false ||
+                    ($poll->getOriginal('closes_at') && Carbon::parse($poll->getOriginal('closes_at'))->isPast());
+
+                if (! $wasClosedBefore) {
+                    PollClosed::dispatch($poll);
+                }
+            }
+        });
+    }
+
+    protected static function newFactory()
+    {
+        return PollFactory::new();
     }
 }
