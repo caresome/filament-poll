@@ -3,6 +3,7 @@
     'hasVoted' => false,
     'authGuard' => null,
     'showVoteCount' => true,
+    'showBackButton' => false,
 ])
 
 @php
@@ -79,13 +80,21 @@
         </div>
     @endforeach
 
-    <div class="fi-poll-footer">
-        @if ($showVoteCount)
-            <div class="fi-poll-total-votes" role="status" aria-live="polite">
-                <x-filament::icon icon="heroicon-o-users" class="fi-poll-total-votes-icon" aria-hidden="true" />
-                <span>{{ number_format($poll->total_votes) }} {{ __('filament-poll::general.total_text') }}
-                    {{ trans_choice('filament-poll::general.vote_count', $poll->total_votes) }}</span>
-            </div>
-        @endif
-    </div>
+    @if ($showVoteCount || $showBackButton)
+        <div class="fi-poll-footer">
+            @if ($showVoteCount)
+                <div class="fi-poll-total-votes" role="status" aria-live="polite">
+                    <x-filament::icon icon="heroicon-o-users" class="fi-poll-total-votes-icon" aria-hidden="true" />
+                    <span>{{ number_format($poll->total_votes) }} {{ __('filament-poll::general.total_text') }}
+                        {{ trans_choice('filament-poll::general.vote_count', $poll->total_votes) }}</span>
+                </div>
+            @endif
+
+            @if ($showBackButton)
+                <x-filament::button wire:click="$set('showResults', false)" color="gray" size="sm" outlined>
+                    {{ __('filament-poll::actions.back_to_voting') }}
+                </x-filament::button>
+            @endif
+        </div>
+    @endif
 </div>

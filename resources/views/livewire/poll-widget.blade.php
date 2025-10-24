@@ -45,16 +45,8 @@
                     :has-voted="$hasVoted"
                     :auth-guard="$authGuard"
                     :show-vote-count="$poll->show_vote_count"
+                    :show-back-button="!$hasVoted && !$poll->isClosed()"
                 />
-
-                @if (!$hasVoted && !$poll->isClosed())
-                    <div class="fi-poll-footer mt-4">
-                        <x-filament::button wire:click="$set('showResults', false)" color="gray" size="sm"
-                            outlined>
-                            {{ __('filament-poll::actions.back_to_voting') }}
-                        </x-filament::button>
-                    </div>
-                @endif
             @else
                 @if ($this->requiresLogin())
                     <div class="fi-poll-login-required" role="status" aria-live="polite">
