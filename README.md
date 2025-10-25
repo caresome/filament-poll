@@ -417,10 +417,6 @@ WCAG 2.1 AA compliant with full accessibility support:
 | **Semantic HTML** | Proper use of fieldset, legend, etc. |
 | **Progress Bars** | Accessible with ARIA attributes |
 
-## Contributing
-
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
 ## License
 
 The MIT License (MIT). See [LICENSE.md](LICENSE.md) for details.
