@@ -2,6 +2,11 @@
 
 All notable changes to `filament-poll` will be documented in this file.
 
+## [2.0.0] - 2026-01-25
+
+### Changed
+- Add Filament v5 compatibility and update composer constraint
+
 ## [1.0.0] - 2025-10-21
 
 ### Added

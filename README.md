@@ -1,6 +1,6 @@
 # Filament Poll
 
-A FilamentPHP v4 plugin for creating and managing interactive polls with Livewire-powered components.
+A FilamentPHP v5 plugin for creating and managing interactive polls with Livewire-powered components.
 
 ![filament-poll-thumbnail](https://github.com/user-attachments/assets/e2ba0ff6-1ca9-4a4a-99e9-5835c066e1ce)
 
@@ -34,9 +34,9 @@ A FilamentPHP v4 plugin for creating and managing interactive polls with Livewir
 
 ## Requirements
 
-- PHP 8.1 or higher
-- Laravel 10.x or 11.x
-- FilamentPHP 4.x
+- PHP 8.2 or higher
+- Laravel 11.x or 12.x
+- FilamentPHP 5.x
 
 ## Quick Start
 
